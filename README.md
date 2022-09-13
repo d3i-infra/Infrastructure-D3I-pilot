@@ -1,6 +1,11 @@
 # Terraform to deploy our cloud infrastructure
 
-Terraform is used to deploy the cloud infrastructure of the D3I pilot, all cloud configurations are in the config file.
+Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I pilot, all cloud configurations are in the config file. If changes need to be made to the cloud infrastructure, this has to be done using these config files.
+
+Why are we doing it this way?
+
+- We can apply version control to the IaC
+- Our infrastructure will be replicable, by us and by others
 
 
 # Secure the terraform.tfstate file 
