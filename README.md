@@ -7,17 +7,15 @@ Why are we doing it this way?
 - We can apply version control to the IaC
 - Our infrastructure will be replicable, by us and by others
 
+# How to use?
 
-# Secure the terraform.tfstate file 
+Install `terraform` and `pass`. Look at the tutorials below to get the basics of terraform. 
+We the `az cli` as the authentication method for terraform `az login` on the command line.
 
-If you want to apply changes to the cloud infrastructure terraform needs to know the current state.
-If you want to work accross multiple instances or with multiple devs, they all need to be able to access this statefile.
-The statefile also contains sensitive information, and therefore needs to be locked away.
-The solution is to store this statefile in blobstorage to do this: 
-
-1. Create a resource group 
-2. Create Storage account + container
-3. Configure `main.tf`
+1. Specify the variables that need to be specified. (see: `variables.tf`)
+2. Add the secrets in pass (see the scripts for their names)
+3. Authenticate with `az login`
+4. Use the terraform scripts or commands
 
 # Generate secrets and keys
 
@@ -38,6 +36,16 @@ pass insert --multiline /terraformtest/data_encryption_public_rsa_key
 
 Use terraform plan, apply, destroy with the correct environmental variables set, by using the provided scripts, `./plan.sh`, `./apply.sh` and `./destroy.sh`.
 
+# Secure the terraform.tfstate file 
+
+If you want to apply changes to the cloud infrastructure terraform needs to know the current state.
+If you want to work accross multiple instances or with multiple devs, they all need to be able to access this statefile.
+The statefile also contains sensitive information, and therefore needs to be locked away.
+The solution is to store this statefile in blobstorage to do this: 
+
+1. Create a resource group 
+2. Create Storage account + container
+3. Configure `main.tf`
 
 # Tutorials
 
