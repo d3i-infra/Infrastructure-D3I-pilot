@@ -1,3 +1,11 @@
+## TODO
+
+- Test Azure postgresql integration (I think it should sort of work), havent tested this at all
+- Test the rest of the components
+- Test data encryption keys
+- Setup environment for production
+- Configure a data backup mechanism
+
 # Terraform to deploy our cloud infrastructure
 
 Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I pilot, all cloud configurations are in the config file. If changes need to be made to the cloud infrastructure, this has to be done using these config files.
@@ -7,7 +15,7 @@ Why are we doing it this way?
 - We can apply version control to the IaC
 - Our infrastructure will be replicable, by us and by others
 
-# How to use?
+## How to use?
 
 Install `terraform` and `pass`. Look at the tutorials below to get the basics of terraform. 
 We the `az cli` as the authentication method for terraform `az login` on the command line.
@@ -17,7 +25,7 @@ We the `az cli` as the authentication method for terraform `az login` on the com
 3. Authenticate with `az login`
 4. Use the terraform scripts or commands
 
-# Generate secrets and keys
+## Generate secrets and keys
 
 Generate keys for data encryption:
 
@@ -36,7 +44,7 @@ pass insert --multiline /terraformtest/data_encryption_public_rsa_key
 
 Use terraform plan, apply, destroy with the correct environmental variables set, by using the provided scripts, `./plan.sh`, `./apply.sh` and `./destroy.sh`.
 
-# Secure the terraform.tfstate file 
+## Secure the terraform.tfstate file 
 
 If you want to apply changes to the cloud infrastructure terraform needs to know the current state.
 If you want to work accross multiple instances or with multiple devs, they all need to be able to access this statefile.
@@ -47,7 +55,7 @@ The solution is to store this statefile in blobstorage to do this:
 2. Create Storage account + container
 3. Configure `main.tf`
 
-# Tutorials
+## Tutorials
 
 - [Video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
 - [Video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)

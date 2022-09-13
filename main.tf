@@ -6,7 +6,7 @@ terraform {
     }
   }
 
-  # I create the storage account and container by hand
+  # I created the storage account and container by hand
   backend "azurerm" {
     resource_group_name  = "tfstate-rg"
     storage_account_name = "d3itfstorage"
@@ -65,8 +65,6 @@ resource "azurerm_key_vault" "kv" {
     key_permissions = [
       "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", "Release", "Rotate", "GetRotationPolicy", "SetRotationPolicy",
     ]
-
-
     secret_permissions = [
       "Get", "List", "Delete", "Recover", "Backup", "Restore", "Set", "Purge",
     ]
@@ -200,6 +198,42 @@ resource "azurerm_container_registry" "reg" {
 }
 
 ##############################################################################
+# Create PostgreSQL database on Azure 
+# Note: I am not quite sure how this should be configured
+# I think this should be workable
+
+resource "azurerm_private_dns_zone" "dns" {
+  name                = "${var.project_name}.postgres.database.azure.com"
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "virtual-network-link" {
+  name                  = "${var.project_name}-virtual-network-link"
+  private_dns_zone_name = azurerm_private_dns_zone.dns.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+  resource_group_name   = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_postgresql_flexible_server" "example" {
+  name                   = "${var.project_name}-psqlflexibleserver"
+  resource_group_name    = azurerm_resource_group.rg.name
+  location               = azurerm_resource_group.rg.location
+  version                = "12"
+  delegated_subnet_id    = azurerm_subnet.subnet2.id
+  private_dns_zone_id    = azurerm_private_dns_zone.dns.id
+  administrator_login    = var.postgres_username
+  administrator_password = var.postgres_password
+  zone                   = "1" # This is the availability zone
+
+  storage_mb = 32768 # I believe this is the least amount possible
+
+  sku_name   = "B_Standard_B2s"
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.virtual-network-link]
+
+}
+
+
+##############################################################################
 # Create azure virtual network and subnet
 
 resource "azurerm_virtual_network" "vnet" {
@@ -222,13 +256,31 @@ resource "azurerm_subnet" "subnet1" {
   service_endpoints    = ["Microsoft.Storage", "Microsoft.KeyVault", "Microsoft.Web"]
 
   delegation {
-    name = "ServerFarmdelegation"
+    name = "serverfarmdelegation"
     service_delegation {
       name = "Microsoft.Web/serverFarms"
     }
   }
 }
 
+resource "azurerm_subnet" "subnet2" {
+  name                 = "${var.project_name}-subnet2"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+  service_endpoints    = ["Microsoft.Storage"]
+
+  delegation {
+    name = "flexibleservers"
+    service_delegation {
+      name = "Microsoft.DBforPostgreSQL/flexibleServers"
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+      ]
+    }
+  }
+
+}
 
 ##############################################################################
 # Setup cost monitoring
