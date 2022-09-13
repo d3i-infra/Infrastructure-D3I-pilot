@@ -39,4 +39,10 @@ variable "data_encryption_public_rsa_key" {
   description = "Public RSA key that is used to encrypt data donated by participants"
 }
 
+variable "owner_email" {
+  type        = string
+  sensitive   = true
+  description = "The person that should be emailed when costs exceed a threshold, see main.tf"
+}
+
 

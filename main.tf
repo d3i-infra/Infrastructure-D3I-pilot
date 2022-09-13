@@ -115,12 +115,6 @@ resource "azurerm_linux_web_app" "wa" {
   service_plan_id           = azurerm_service_plan.sp.id
   virtual_network_subnet_id = azurerm_subnet.subnet1.id
 
-  ###### CONTINUE HERE
-  ###### CONTINUE HERE
-  ###### CONTINUE HERE
-  ###### CONTINUE HERE
-  ###### CONTINUE HERE
-  ###### CONTINUE HERE
   site_config {
     application_stack {
       docker_image     = "${azurerm_container_registry.reg.name}/my_image"
@@ -132,6 +126,7 @@ resource "azurerm_linux_web_app" "wa" {
   app_settings = {
     DOCKER_REGISTRY_SERVER_URL = "https://${azurerm_container_registry.reg.name}.azurecr.io"
   }
+
   identity {
     type = "SystemAssigned"
   }
@@ -185,7 +180,7 @@ resource "azurerm_storage_container" "sc" {
 }
 
 # Network rules for storage account only allow from subnet
-resource "azurerm_storage_account_network_rules" "example" {
+resource "azurerm_storage_account_network_rules" "storage-account-network-rules" {
   storage_account_id = azurerm_storage_account.sa.id
 
   default_action             = "Deny"
@@ -235,3 +230,69 @@ resource "azurerm_subnet" "subnet1" {
 }
 
 
+##############################################################################
+# Setup cost monitoring
+
+resource "azurerm_monitor_action_group" "monitor-action-group" {
+  name                = "${var.project_name}-monitor-action-group"
+  resource_group_name = azurerm_resource_group.rg.name
+  short_name          = "mon-act-grp"
+}
+
+resource "azurerm_consumption_budget_resource_group" "budget-rg" {
+  name              = "${var.project_name}-budget-rg"
+  resource_group_id = azurerm_resource_group.rg.id
+
+  amount     = 200
+  time_grain = "Monthly"
+
+  time_period {
+    start_date = "2022-09-01T00:00:00Z"
+    end_date   = "2023-09-01T00:00:00Z"
+  }
+
+  filter {
+    dimension {
+      name = "ResourceId"
+      values = [
+        azurerm_monitor_action_group.monitor-action-group.id,
+      ]
+    }
+
+    tag {
+      name = "environment"
+      values = [
+        var.environment,
+      ]
+    }
+  }
+
+  notification {
+    enabled        = true
+    threshold      = 90.0
+    operator       = "EqualTo"
+    threshold_type = "Forecasted"
+
+    contact_emails = [
+      var.owner_email,
+    ]
+
+    contact_groups = [
+      azurerm_monitor_action_group.monitor-action-group.id,
+    ]
+
+    contact_roles = [
+      "Owner",
+    ]
+  }
+
+  notification {
+    enabled   = false
+    threshold = 100.0
+    operator  = "GreaterThan"
+
+    contact_emails = [
+      var.owner_email
+    ]
+  }
+}
