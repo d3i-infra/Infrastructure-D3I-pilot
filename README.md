@@ -49,11 +49,11 @@ The solution is to store this statefile in blobstorage to do this:
 
 # Tutorials
 
-- [https://www.youtube.com/watch?v=7xngnjfIlK4](Video 1)
-- [https://www.youtube.com/watch?v=RTEgE2lcyk4](Video 2)
-- [https://pontifex.dev/posts/terraform-azure-managed-identity/](Blog about managed identities)
-- [https://docs.microsoft.com/en-au/azure/templates/](Link to the ARM templates)
-- [https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1](Link to tips managing secrets in Terraform)
+- [Video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
+- [Video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)
+- [Blog about managed identities](https://pontifex.dev/posts/terraform-azure-managed-identity/)
+- [Link to the ARM templates](https://docs.microsoft.com/en-au/azure/templates/)
+- [Link to tips managing secrets in Terraform](https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1)
 
 
 ## The sequence of commands are:
