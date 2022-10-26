@@ -1,10 +1,10 @@
 ## TODO
 
-- Test Azure postgresql integration (I think it should sort of work), havent tested this at all
-- Test the rest of the components
-- Test data encryption keys
-- Setup environment for production
-- Configure a data backup mechanism
+- ✅ Test Azure postgresql integration (I think it should sort of work), havent tested this at all
+- ✅ Test the rest of the components (TN: not complete but app runs)
+- ❌ Test data encryption keys (NS: Discuss with data stewards)
+- ❌ Setup environment for production
+- ❌ Configure a data backup mechanism
 
 # Terraform to deploy our cloud infrastructure
 
@@ -16,15 +16,40 @@ Why are we doing it this way?
 - Our infrastructure will be replicable, by us and by others
 
 ## How to use?
+### Preparation
 
-Install `terraform` and `pass`. Look at the tutorials below to get the basics of terraform. 
-We the `az cli` as the authentication method for terraform `az login` on the command line.
+1. Install `terraform`. 
+2. Install `azure cli` (az) (used by terraform to interact with Azure)
+3. Run 'az login' to authenticate to the azure cli tool (az) and follow in structions
 
-1. Specify the variables that need to be specified. (see: `variables.tf`)
-2. Add the secrets in pass (see the scripts for their names)
-3. Authenticate with `az login`
-4. Use the terraform scripts or commands
+Look at the tutorials below to get the basics of terraform. 
 
+The --use-device-code option below is only required if you don't have a browser on the system (bastion host)
+
+    az login --use-device-code --tenant xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx
+
+### Terraform initialisation
+
+1. cd setupTerraForm
+```
+terraform init -backend-config=backend.conf
+```
+
+Although not required you may want to look at / change variables in backend.conf
+
+The above command creates an exclusive storage environment for terraform state.
+Destroying resources of the app will not affect the terraform state.
+
+### Deploy the web app
+
+1. Decide if you need to edit the terraform.tfvars file to change variable values.
+2. Run the command below
+
+```
+cd ..
+cd setupd3i
+time terraform apply -auto-approve
+```
 ## Generate secrets and keys
 
 Generate keys for data encryption:
@@ -42,9 +67,9 @@ pass generate /terraformtest/postgres_password 30
 pass insert --multiline /terraformtest/data_encryption_public_rsa_key
 ```
 
-Use terraform plan, apply, destroy with the correct environmental variables set, by using the provided scripts, `./plan.sh`, `./apply.sh` and `./destroy.sh`.
-
 ## Secure the terraform.tfstate file 
+
+** This has been entirely automated though the setupTerraform ** code
 
 If you want to apply changes to the cloud infrastructure terraform needs to know the current state.
 If you want to work accross multiple instances or with multiple devs, they all need to be able to access this statefile.

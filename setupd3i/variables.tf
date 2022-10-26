@@ -16,8 +16,7 @@ variable "location" {
 }
 
 variable "local_ip" {
-  type        = string
-  sensitive   = true
+  type        = list(string)
   description = "My local IP so terraform has access to resources behind a firewall"
 }
 
@@ -25,12 +24,6 @@ variable "postgres_username" {
   type        = string
   sensitive   = true
   description = "Username for postgres database"
-}
-
-variable "postgres_password" {
-  type        = string
-  sensitive   = true
-  description = "Password for postgres database"
 }
 
 variable "data_encryption_public_rsa_key" {
@@ -45,4 +38,38 @@ variable "owner_email" {
   description = "The person that should be emailed when costs exceed a threshold, see main.tf"
 }
 
+/* ## Currently using external registry
+variable "registry_name" {
+  type        = string
+  description = "Name of registry bootstrapped"
+}*/
 
+variable "database_name" {
+  type        = string
+  description = "Postgresql Database Name"
+}
+
+variable "app_listening_port" {
+  type = number
+  description = "Port we communicate to azure to connect to"
+}
+
+variable "dockerimageurl" {
+  type        = string
+  description = "Docker image url source (e.g. eyra github)"
+}
+
+variable "dockerimagetag" {
+  type        = string
+  description = "Which version to use like 'latest' or specific release"
+}
+
+variable "costmonitor_startdate" {
+  type        = string
+  description = "Required for budget monitoring (start date)"
+}
+
+variable "costmonitor_enddate" {
+  type        = string
+  description = "Required for budget monitoring (end date) max one year"
+}
