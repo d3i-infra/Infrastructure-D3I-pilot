@@ -14,7 +14,6 @@ resource "azurerm_storage_container" "sc" {
 }
 
 ## The generated storage account credentials are stored in the key vault for human access if required
-## This is 
 resource "azurerm_key_vault_secret" "sausername" {
   name         = "saaccountname"
   value        = azurerm_storage_account.sa.name

@@ -2,7 +2,6 @@
 
 - ✅ Test Azure postgresql integration (I think it should sort of work), havent tested this at all
 - ✅ Test the rest of the components (TN: not complete but app runs)
-- ❌ Test data encryption keys (NS: Discuss with data stewards)
 - ❌ Setup environment for production
 - ❌ Configure a data backup mechanism
 
@@ -32,7 +31,7 @@ The --use-device-code option below is only required if you don't have a browser 
 
 1. cd setupTerraForm
 ```
-terraform init -backend-config=backend.conf
+terraform init
 ```
 
 Although not required you may want to look at / change variables in backend.conf
@@ -48,6 +47,7 @@ Destroying resources of the app will not affect the terraform state.
 ```
 cd ..
 cd setupd3i
+terraform init -backend-config=backend.conf
 time terraform apply -auto-approve
 ```
 ## Generate secrets and keys

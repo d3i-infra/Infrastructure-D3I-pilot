@@ -63,3 +63,35 @@ resource "azurerm_linux_web_app" "webapp" {
   depends_on = [azurerm_postgresql_flexible_server.database]
 }
 
+
+
+resource "azurerm_monitor_diagnostic_setting" "example" {
+  name               = "example"
+  target_resource_id = azurerm_linux_web_app.webapp.id
+  storage_account_id = azurerm_storage_account.sa.id
+
+  log {
+    category = "AppServiceHTTPLogs"
+    enabled  = true
+    retention_policy {
+      enabled = false
+    }
+  }
+
+  log {
+    category = "AppServiceConsoleLogs"
+    enabled  = true
+    retention_policy {
+      enabled = false
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = false
+    }
+  }
+}
+
