@@ -28,7 +28,7 @@ resource "azurerm_postgresql_flexible_server" "database" {
 
   storage_mb = 32768 # I believe this is the least amount possible
 
-  sku_name   = "B_Standard_B2s" # cheapest SKU mostly intended for dev/test light prod.
+  sku_name = "B_Standard_B2s" # cheapest SKU mostly intended for dev/test light prod.
   #sku_name    = "GP_Standard_D2s_v3" # cheapest 'normal production worthy' SKU I could find
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.virtual-network-link-database]
@@ -36,10 +36,10 @@ resource "azurerm_postgresql_flexible_server" "database" {
 }
 
 resource "azurerm_postgresql_flexible_server_database" "postgresql-db" {
-  name                = var.database_name
-  server_id           = azurerm_postgresql_flexible_server.database.id
-  charset             = "utf8"
-  collation           = "en_US.utf8"
+  name      = var.database_name
+  server_id = azurerm_postgresql_flexible_server.database.id
+  charset   = "utf8"
+  collation = "en_US.utf8"
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "azureextention" {

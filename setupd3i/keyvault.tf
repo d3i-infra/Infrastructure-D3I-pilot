@@ -9,9 +9,9 @@ resource "azurerm_key_vault" "kv" {
   sku_name                    = "standard"
 
   network_acls {
-    bypass                     = "AzureServices"
-    default_action             = "Deny"
-    ip_rules                   = var.local_ip
+    bypass         = "AzureServices"
+    default_action = "Deny"
+    ip_rules       = var.local_ip
   }
 
   # Setup keyvault access policy for the user that autheniticated
@@ -36,7 +36,7 @@ resource "azurerm_key_vault_secret" "postgresusername" {
 }
 
 resource "random_password" "database_password" {
-  length = 20
+  length  = 20
   special = false
 }
 
