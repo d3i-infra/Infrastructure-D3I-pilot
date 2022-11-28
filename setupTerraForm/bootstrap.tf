@@ -48,21 +48,3 @@ resource "azurerm_role_assignment" "storage-blob-data-owner" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-##############################################################################
-# Create azure container registry 
-#
-#resource "azurerm_resource_group" "rgreg" {
-#  name     = "${var.environment}-${var.resource_group}-registry-rg"
-#  location = var.location
-#  tags = {
-#    environment = var.environment
-#    source      = "Terraform"
-#  }
-#}
-#
-#resource "azurerm_container_registry" "reg" {
-#  name                = "${replace(lower(var.project_name), "-", "")}registry"
-#  resource_group_name = azurerm_resource_group.rgreg.name
-#  location            = azurerm_resource_group.rgreg.location
-#  sku                 = "Standard"
-#}
