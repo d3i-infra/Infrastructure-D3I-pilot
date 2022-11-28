@@ -67,13 +67,3 @@ variable "costmonitor_enddate" {
   type        = string
   description = "Required for budget monitoring (end date) max one year"
 }
-
-variable "imagename_privacy_support_server" {
-  type        = string
-  description = "Image name of the server that servers the privacy and support page"
-}
-
-variable "imagetag_privacy_support_server" {
-  type        = string
-  description = "Image tag of the server that serves the privacy and support page"
-}
