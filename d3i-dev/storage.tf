@@ -5,6 +5,15 @@ resource "azurerm_storage_account" "sa" {
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  queue_properties {
+    logging {
+      read                  = true
+      write                 = true
+      delete                = true
+      retention_policy_days = 100
+      version               = 1.0
+    }
+  }
 }
 
 resource "azurerm_storage_container" "sc" {
