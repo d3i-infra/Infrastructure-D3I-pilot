@@ -1,10 +1,14 @@
-# Todo: The application should only have write access, not read access
 resource "azurerm_storage_account" "sa" {
   name                     = "${replace(lower(var.project_name), "-", "")}sa${var.project_name}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  network_rules {
+    default_action = "Deny"
+    ip_rules       = var.local_ip
+  }
 
   queue_properties {
     logging {
@@ -42,8 +46,6 @@ data "azurerm_storage_account_blob_container_sas" "sastoken" {
   container_name    = azurerm_storage_container.sc.name
   https_only        = true
 
-  #ip_address = "168.1.5.65"
-
   start  = "2022-11-29"
   expiry = "2023-11-29"
 
@@ -64,6 +66,6 @@ data "azurerm_storage_account_blob_container_sas" "sastoken" {
 }
 
 output "sas_url_query_string" {
-  value = data.azurerm_storage_account_blob_container_sas.sastoken.sas
+  value     = data.azurerm_storage_account_blob_container_sas.sastoken.sas
   sensitive = true
 }

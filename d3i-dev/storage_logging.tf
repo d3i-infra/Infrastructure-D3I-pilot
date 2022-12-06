@@ -7,9 +7,9 @@ resource "azurerm_storage_account" "salogging" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "core-diagnostic" {
-  name                       = "loggingsa"
-  target_resource_id         = "${azurerm_storage_account.sa.id}/blobServices/default/"
-  storage_account_id         = azurerm_storage_account.salogging.id
+  name               = "loggingsa"
+  target_resource_id = "${azurerm_storage_account.sa.id}/blobServices/default/"
+  storage_account_id = azurerm_storage_account.salogging.id
 
   log {
     category = "StorageRead"
