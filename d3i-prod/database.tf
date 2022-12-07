@@ -16,7 +16,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "virtual-network-link-d
 }
 
 resource "azurerm_postgresql_flexible_server" "database" {
-  name                   = "${lower(var.project_name)}-psql-database"
+  name                   = "${lower(var.environment)}-${lower(var.project_name)}-psql-database"
   resource_group_name    = azurerm_resource_group.rg.name
   location               = azurerm_resource_group.rg.location
   version                = "12"
