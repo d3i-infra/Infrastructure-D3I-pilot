@@ -68,15 +68,3 @@ terraform destroy       # Destroys all resources
 
 On linux a working nameserver needs to be set in /etc/resolv.conf
 Even if you do not use /etc/resolv.conf config yourself, terraform needs it
-
-
-# Azure specific security implementations for D3I
-
-- Storage account (SA) is behind a firewall and web app uses a private endpoint 
-- Web app authenticates with the SA through a SAS with write only access
-- The admin, Niek en Theo are users that can change permissions on the SA
-- Niek and Theo have Data Contributres roles on the SA: meaning read write and delete access
-    - Needed for reporting; can be removed later
-- Access to the SA is logged in a different SA, see terraform config: `storage_logging.tf`
-
-For the specifics see the terraform config files
