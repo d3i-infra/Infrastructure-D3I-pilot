@@ -53,7 +53,7 @@ time terraform apply -auto-approve
 - [Link to the ARM templates](https://docs.microsoft.com/en-au/azure/templates/)
 - [Link to tips managing secrets in Terraform](https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1)
 
-## The sequence of commands are:
+### The sequence of commands are:
 
 ```
 terraform init          # Initialize
@@ -68,3 +68,12 @@ terraform destroy       # Destroys all resources
 
 On linux a working nameserver needs to be set in /etc/resolv.conf
 Even if you do not use /etc/resolv.conf config yourself, terraform needs it
+
+
+# Azure components of the d3i-pilot
+
+![Azure components](/resources/Azure_components.svg)
+
+
+
+
