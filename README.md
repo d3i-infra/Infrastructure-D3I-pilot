@@ -97,6 +97,12 @@ Note that in the current setup the container images for the data donation app ar
 
 The pull credentials are configure with RBAC and managed identities; Azure app services is configured with a system managed identity, and a pull role for this container registry will be assigned to this identity.
 
+Images can (for example) be build and pushed with the following command: 
+
+```
+az acr build --image <image-name>:<tag> --registry nameofregistry --file Dockerfile .
+```
+
 ### Azure app service with a web server
 
 This Azure app service runs a minimalist web server that serves the following static content: contact page, support page and instructions in pdf format for the participant. The data donation app contains hard coded references to this web server.
