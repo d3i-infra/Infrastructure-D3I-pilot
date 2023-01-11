@@ -1,7 +1,5 @@
 #############################################################################
 # Create PostgreSQL database on Azure 
-# Note: I am not quite sure how this should be configured
-# I think this should be workable
 
 resource "azurerm_private_dns_zone" "dns" {
   name                = "${var.project_name}.postgres.database.azure.com"
