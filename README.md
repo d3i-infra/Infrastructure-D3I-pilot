@@ -1,3 +1,8 @@
+# Infrastructure of the D3I-Pilot
+
+This respository contains instructions on how to deploy the D3I infrastructure to Azure using Terraform. An Azure subscription is required.
+This README also includes a description of the components deployed.
+
 # Terraform to deploy our cloud infrastructure
 
 Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I pilot, all cloud configurations are in the config file. If changes need to be made to the cloud infrastructure, this has to be done using these config files.
