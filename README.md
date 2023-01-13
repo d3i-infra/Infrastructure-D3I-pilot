@@ -1,7 +1,15 @@
 # Infrastructure of the D3I-Pilot
 
-This respository contains instructions on how to deploy the D3I infrastructure to Azure using Terraform. An Azure subscription is required.
-This README also includes a description of the components deployed.
+This reposity contains the terraform configration files that have been used to run the D3i-Pilot study.
+
+In this README you will find a description of the components that make up the infrastructure of the D3I pilot 
+and instructions on how to deploy the D3I infrastructure to Azure using Terraform. An Azure subscription is required.
+
+In order to use this respository, you must have::
+
+1. An Azure subscription
+2. Basic knowledge about Terraform
+2. Basic knowledge about Azure
 
 # Terraform to deploy our cloud infrastructure
 
