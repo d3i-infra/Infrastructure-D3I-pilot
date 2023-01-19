@@ -107,6 +107,9 @@ For the exact configuration of the individual components see the terraform confi
 
 ![Azure components](/resources/azure_components.svg)
 
+
+<img title="Azure components" src="/resources/azure_components.svg">
+
 ### Azure subscription
 
 The Azure subscription the components will be created in.
