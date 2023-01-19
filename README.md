@@ -105,9 +105,6 @@ Below is a diagram of the components on Azure that the software of the D3I-pilot
 The components will be described in more detail below.
 For the exact configuration of the individual components see the terraform configuration files.
 
-![Azure components](/resources/azure_components.svg)
-
-
 <img title="Azure components" src="/resources/azure_components.svg">
 
 ### Azure subscription
