@@ -48,9 +48,9 @@ variable "app_listening_port" {
   description = "Port we communicate to azure to connect to"
 }
 
-variable "dockerimageurl" {
+variable "dockerimagename" {
   type        = string
-  description = "Docker image url source (e.g. eyra github)"
+  description = "Docker image name, for example 'next'"
 }
 
 variable "dockerimagetag" {
@@ -66,4 +66,9 @@ variable "costmonitor_startdate" {
 variable "costmonitor_enddate" {
   type        = string
   description = "Required for budget monitoring (end date) max one year"
+}
+
+variable "project_name_automation_account" {
+  type        = string
+  description = "The project name of the project that the automation account is in"
 }

@@ -7,6 +7,13 @@ resource "azurerm_service_plan" "appserviceplan" {
   sku_name            = "B1"
 }
 
+// Obtain the name of the registry from a different configuration
+data "azurerm_automation_variable_string" "registry-name" {
+  name                    = "tfex-registry-name-var"
+  resource_group_name     = "${var.project_name_automation_account}-rg"
+  automation_account_name = "tfex-${var.project_name_automation_account}-automation-account"
+}
+
 
 # Create the web app, pass in the App Service Plan ID
 resource "azurerm_linux_web_app" "webapp" {
@@ -20,9 +27,10 @@ resource "azurerm_linux_web_app" "webapp" {
 
   site_config {
     always_on = true
+    container_registry_use_managed_identity = true
     application_stack {
 
-      docker_image     = var.dockerimageurl
+      docker_image     = "${data.azurerm_automation_variable_string.registry-name.value}.azurecr.io/${var.dockerimagename}"
       docker_image_tag = var.dockerimagetag
     }
     minimum_tls_version = "1.2"
@@ -96,3 +104,16 @@ resource "azurerm_monitor_diagnostic_setting" "example" {
   }
 }
 
+// Obtain principal id of registry, configured in different configuration
+data "azurerm_automation_variable_string" "registry-id" {
+  name                    = "tfex-registry-id-var"
+  resource_group_name     = "${var.project_name_automation_account}-rg"
+  automation_account_name = "tfex-${var.project_name_automation_account}-automation-account"
+}
+
+// Configure pull credentials for that registry
+resource "azurerm_role_assignment" "arc-pull" {
+  principal_id         = azurerm_linux_web_app.webapp.identity[0].principal_id
+  role_definition_name = "AcrPull"
+  scope                = data.azurerm_automation_variable_string.registry-id.value
+}

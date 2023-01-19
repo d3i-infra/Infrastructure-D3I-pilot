@@ -1,11 +1,11 @@
 # Infrastructure of the D3I-Pilot
 
-This reposity contains the terraform configration files that have been used to run the D3i-Pilot study.
+This repository contains the terraform configuration files that have been used to run the D3I pilot study.
 
 In this README you will find a description of the components that make up the infrastructure of the D3I pilot 
 and instructions on how to deploy the D3I infrastructure to Azure using Terraform. An Azure subscription is required.
 
-In order to use this respository, you must have::
+In order to use this repository, you must have:
 
 1. An Azure subscription
 2. Basic knowledge about Terraform
@@ -13,20 +13,20 @@ In order to use this respository, you must have::
 
 # Terraform to deploy our cloud infrastructure
 
-Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I pilot, all cloud configurations are in the config file. If changes need to be made to the cloud infrastructure, this has to be done using these config files.
+Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I Pilot, all cloud configurations are in the configuration files. 
 
-Why are we doing it this way?
+The reason for using Terraform is as follows:
 
 - We can apply version control to the IaC
-- Our infrastructure will be replicable, by us and by others
+- Our infrastructure will be replicable
 
-# How to use Terraform
+# How to use the terraform configuration files in this repository
 
 ## Preparation
 
 1. Install `terraform`. 
-2. Install `azure cli` (az) (used by terraform to interact with Azure)
-3. Run 'az login' to authenticate to the azure cli tool (az) and follow in structions
+2. Install `azure cli` (called `az` and is used by terraform to interact with Azure)
+3. Run 'az login' to authenticate to the azure cli tool and follow instructions
 
 Look at the tutorials below to get the basics of terraform. 
 
@@ -37,6 +37,7 @@ The --use-device-code option below is only required if you don't have a browser 
 ## Terraform initialisation
 
 1. cd setupTerraForm
+
 ```
 terraform init
 ```
@@ -46,27 +47,42 @@ Although not required you may want to look at / change variables in backend.conf
 The above command creates an exclusive storage environment for terraform state.
 Destroying resources of the app will not affect the terraform state.
 
-## Deploy the web app
+## Deploy an environment
+
+First deploy the shared resources, these are resources used by all environments (dev, test, prod).
 
 1. Decide if you need to edit the terraform.tfvars file to change variable values.
 2. Run the command below
 
 ```
-cd ..
-cd setupd3i
+cd d3i-shared-resources
 terraform init -backend-config=backend.conf
 time terraform apply -auto-approve
 ```
 
-## Tutorials
+Next deploy an environment
 
-- [Video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
-- [Video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)
+1. Decide if you need to edit the terraform.tfvars file to change variable values.
+2. Run the command below
+
+```
+cd d3i-<environment>
+terraform init -backend-config=backend.conf
+time terraform apply -auto-approve
+```
+
+## Resources for learning
+
+### Useful links 
+
+- [Tutorial video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
+- [Tutorial video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)
 - [Blog about managed identities](https://pontifex.dev/posts/terraform-azure-managed-identity/)
-- [Link to the ARM templates](https://docs.microsoft.com/en-au/azure/templates/)
-- [Link to tips managing secrets in Terraform](https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1)
+- [Link to ARM templates documentation](https://docs.microsoft.com/en-au/azure/templates/)
 
-### The sequence of commands are:
+### A logical sequence of commands when using Terraform
+
+These commands outlines the basic flow in Terraform, not all steps are necessary, 
 
 ```
 terraform init          # Initialize
@@ -103,6 +119,10 @@ This storage account will hold Terraform state files. These files will be used b
 
 Cost monitoring is configured for the resource groups that contain the components of the data donation app. If costs exceed a preset limit the administrator will be notified by email.
 
+### Automation account
+
+The automation account holds non-sensitive variables created by the resources in `d3i-shared-resources` used by the resources deployed in `d3i-<environment>`.
+
 ### Container registry
 
 This container registry holds the images that contain the app. Azure app services is configured to pull images from this container registry.
@@ -110,11 +130,21 @@ Note that in the current setup the container images for the data donation app ar
 
 The pull credentials are configure with RBAC and managed identities; Azure app services is configured with a system managed identity, and a pull role for this container registry will be assigned to this identity.
 
-Images can (for example) be build and pushed with the following command: 
+Images can be pushed to the registry as follows:
 
 ```
-az acr build --image <image-name>:<tag> --registry nameofregistry --file Dockerfile .
+# Re-name your locally built image
+docker tag <locally-built-image>:<tag> <name-of-registry-on-azure>.azurecr.io/<image-name>:<tag>
+
+# Log in to the registry on azure
+az login
+az acr login --name <name-of-registry-on-azure>
+
+# Push your image to the registry
+docker push <name-of-registry-on-azure>.azurecr.io/<image-name>:<tag>
 ```
+
+This assumes you already have an image built following these [build instructions](https://github.com/eyra/mono/blob/d3i/latest/PORT.md#release-instructions).
 
 ### Azure app service with a web server
 
@@ -126,6 +156,8 @@ This Azure app service runs the data donation app. Diagnostics generated by the 
 The app service is granted access to the storage account through an Shared Access Signature (SAS) with write only access. Traffic to the storage account is routed internally on Azure.
 
 Azure app services handles the: domain name, DNS, availability, certificates for TLS.
+
+Azure app service assumes that the correct docker image with the correct tag is present in the container registry.
 
 ### PostgreSQL database
 
