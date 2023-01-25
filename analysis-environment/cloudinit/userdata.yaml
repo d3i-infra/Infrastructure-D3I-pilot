@@ -1,0 +1,11 @@
+#cloud-config
+
+# update and install packages
+package_update: true
+package_upgrade: true
+
+# install jupyterhub and add admin user
+runcmd:
+  - "curl -L https://tljh.jupyter.org/bootstrap.py | python3 - --admin ${admin_username}"
+  - tljh-config set user_environment.default_app jupyterlab
+  - tljh-config reload
