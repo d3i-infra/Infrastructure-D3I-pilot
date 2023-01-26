@@ -1,52 +1,7 @@
 # virtual machine 
 
-variable "prefix" {
-  default = "analysis-server"
-}
-
-resource "azurerm_virtual_network" "main" {
-  name                = "${var.prefix}-network"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-resource "azurerm_subnet" "internal" {
-  name                 = "internal"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.2.0/24"]
-}
-
-resource "azurerm_public_ip" "public-ip" {
-  name                    = "${var.prefix}-pip"
-  location                = azurerm_resource_group.rg.location
-  resource_group_name     = azurerm_resource_group.rg.name
-  allocation_method       = "Static"
-  sku                     = "Standard"
-
-  tags = {
-    environment = var.environment
-  }
-}
-
-resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "analysisserveripconfiguration"
-    subnet_id                     = azurerm_subnet.internal.id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "10.0.2.5"
-    public_ip_address_id          = azurerm_public_ip.public-ip.id
-  }
-}
-
-
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
+  name                  = "${var.hostname}-vm"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.main.id]
@@ -80,7 +35,7 @@ resource "azurerm_virtual_machine" "main" {
   os_profile_linux_config {
     disable_password_authentication = false
     ssh_keys {
-      key_data = file("${var.ssh_public_key_path}")
+      key_data = file("${var.admin_ssh_public_key_path}")
       path     = "/home/${var.admin_username}/.ssh/authorized_keys"
     }
   }
@@ -89,63 +44,45 @@ resource "azurerm_virtual_machine" "main" {
   }
 }
 
-# Configure templates for cloud-init
-data "template_file" "cloud-init-user-data" {
-  template = file("./cloudinit/userdata.yaml")
-  vars = {
-    admin_username = var.admin_username
+# Network interface and public ip for vm
+resource "azurerm_public_ip" "public-ip" {
+  name                    = "${var.hostname}-pip"
+  location                = azurerm_resource_group.rg.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  allocation_method       = "Static"
+  sku                     = "Standard"
+
+  tags = {
+    environment = var.environment
   }
 }
 
-data "template_cloudinit_config" "config" {
-  gzip          = true
-  base64_encode = true
+resource "azurerm_network_interface" "main" {
+  name                = "${var.hostname}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
-  part {
-    content_type = "text/cloud-config"
-    content      = "${data.template_file.cloud-init-user-data.rendered}"
+  ip_configuration {
+    name                          = "analysisserveripconfiguration"
+    subnet_id                     = azurerm_subnet.internal.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.0.2.5"
+    public_ip_address_id          = azurerm_public_ip.public-ip.id
   }
 }
 
-output "userdata" {
-  value = "\n${data.template_file.cloud-init-user-data.rendered}"
-}
 
-
-# Configure DNS zone
+# Configure DNS zone and an A record the public ip
+# So you can reach this VM using a domain name instead of ip address
 resource "azurerm_dns_zone" "dns-zone" {
   name                = "${lower(var.project_name)}.com"
   resource_group_name = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_dns_a_record" "a-record" {
-  name                = "${var.prefix}"
+  name                = "${var.hostname}"
   zone_name           = azurerm_dns_zone.dns-zone.name
   resource_group_name = azurerm_resource_group.rg.name
   ttl                 = 300
   target_resource_id  = azurerm_public_ip.public-ip.id
-}
-
-
-# Security group allow ssh
-resource "azurerm_network_security_group" "security-group" {
-  name                = "${var.prefix}-sg"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-resource "azurerm_network_interface_security_group_association" "cloudinit" {
-  network_interface_id      = azurerm_network_interface.main.id
-  network_security_group_id = azurerm_network_security_group.security-group.id
 }
