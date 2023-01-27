@@ -6,7 +6,9 @@ package_upgrade: true
 
 # install jupyterhub and add admin user
 runcmd:
-  - "curl -L https://tljh.jupyter.org/bootstrap.py | python3 - --admin ${admin_username}"
+  - "curl -L https://tljh.jupyter.org/bootstrap.py | python3 - --admin ${admin_username}:${admin_password}"
   - tljh-config set user_environment.default_app jupyterlab
+  - tljh-config set auth.type firstuseauthenticator.FirstUseAuthenticator
+  - tljh-config set auth.FirstUseAuthenticator.create_users true
   - tljh-config reload
   - "curl -sL https://aka.ms/InstallAzureCLIDeb | bash" # install the azure-cli

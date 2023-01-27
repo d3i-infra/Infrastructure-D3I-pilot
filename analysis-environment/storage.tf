@@ -23,7 +23,7 @@ resource "azurerm_storage_account" "sa" {
 }
 
 resource "azurerm_storage_container" "sc" {
-  name                  = "${lower(var.project_name)}-sc-${var.environment}"
+  name                  = "my-test-container"
   storage_account_name  = azurerm_storage_account.sa.name
   container_access_type = "private"
 }
