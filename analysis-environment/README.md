@@ -1,11 +1,54 @@
-# Examples Python Azure SDK
+# Analysis environment for the D3I-pilot
 
-In order to obtain data from a storage account, the Python Azure SDK needs to be used. 
-In order to get access you need to be logged in. In order to login use the following command:
+This folder contains terraform code to deploy an analysis environment for collaboration purposes.
+The analysis environment consists of a JupyterHub server connected to storage accounts.
+
+For more information see: [User information](#User-information) or [Admin information](#Admin-information)
+
+
+# User information
+
+## Access the analysis environment
+
+Create a secure tunnel to the analysis server using ssh. All traffic to and from the server will be going through this tunnel.
+
+Create the tunnel with the following command:
+
+```
+ssh -L 8080:localhost:80 <username>@<public-ip or domain name of the server>
+```
+
+The username and password or key, will be provided by your administrator. After creating the  tunnel you can go to your browser and put the following in the address bar:
+
+```
+localhost:8080
+```
+
+You should be presented with a JupyterHub login screen.
+
+## Log in to JupyterLab
+
+The first time logging in you can create your account by entering your name and password. 
+Do not forget this, you need these for subsequent logins.
+
+## Installing Python packages
+
+You can install your own packages with `pip`.
+
+## Access to the storage account
+
+In order to get access you need to be logged in. 
+In order to login use the following command in a terminal on the server, and follow instructions.
 
 ```
 az login
 ```
+
+Use the storage accounts for data you want to store. No data should be stored in your local folder, code should be stored in a git repository.
+
+## How to access data using Python Azure SDK
+
+In order to obtain data from a storage account the Python Azure SDK needs to be used. 
 
 Here you can find code examples of common action (if you miss packages you can install them yourself, see for example: `pip3 install azure.identity`):
 
@@ -69,3 +112,23 @@ blob_client.upload_blob(buffer.getvalue(), overwrite=True)
 ```
 
 </details>
+
+
+# Admin information
+
+## Architecture
+
+The architecture of the analysis environment is as follows:
+
+<img title="Analysis environment architecture" src="../resources/analysis_environment_arch.svg">
+
+## Deployment
+
+This environment can be deployed using `terraform`. Cloud-init is used to configure the VM on first boot.
+
+## User setup
+
+Users connect through the server using ssh. So they will need non-super users accounts.
+Authentication of the users to the storage accounts will be through `az login` and configured roles, configure them in the azure portal.
+
+Inspect the configuration of JupyterHub in the `cloudinit/userdata.yaml` hhange to your needs.
