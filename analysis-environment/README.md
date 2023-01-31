@@ -1,9 +1,9 @@
 # Analysis environment for the D3I-pilot
 
-This folder contains terraform code to deploy an analysis environment for collaboration purposes.
+This folder contains Terraform code to deploy an analysis environment for collaboration purposes.
 The analysis environment consists of a JupyterHub server connected to storage accounts.
 
-For more information see: [User information](#User-information) or [Admin information](#Admin-information)
+For more in instructions and more information see: [User information](#User-information) or [Admin information](#Admin-information)
 
 
 # User information
@@ -18,7 +18,7 @@ Create the tunnel with the following command:
 ssh -L 8080:localhost:80 <username>@<public-ip or domain name of the server>
 ```
 
-The username and password or key, will be provided by your administrator. After creating the  tunnel you can go to your browser and put the following in the address bar:
+The username, password and ip address or domain name of the server will be provided by your administrator. After creating the tunnel you can go to your browser and put the following in the address bar:
 
 ```
 localhost:8080
@@ -113,22 +113,21 @@ blob_client.upload_blob(buffer.getvalue(), overwrite=True)
 
 </details>
 
-
 # Admin information
 
 ## Architecture
 
 The architecture of the analysis environment is as follows:
 
-<img title="Analysis environment architecture" src="../resources/analysis_environment_arch.svg">
+<img title="Analysis environment architecture" src="../resources/analysis_environment_arch.svg" width="200">
 
 ## Deployment
 
-This environment can be deployed using `terraform`. Cloud-init is used to configure the VM on first boot.
+This environment can be deployed using `terraform`. Cloud-init is used to configure the virtual machine on first boot.
 
 ## User setup
 
 Users connect through the server using ssh. So they will need non-super users accounts.
 Authentication of the users to the storage accounts will be through `az login` and configured roles, configure them in the azure portal.
 
-Inspect the configuration of JupyterHub in the `cloudinit/userdata.yaml` hhange to your needs.
+Inspect the configuration of JupyterHub in the `cloudinit/userdata.yaml` and change to your needs.
