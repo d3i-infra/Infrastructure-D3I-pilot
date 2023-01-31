@@ -119,7 +119,7 @@ blob_client.upload_blob(buffer.getvalue(), overwrite=True)
 
 The architecture of the analysis environment is as follows:
 
-<img title="Analysis environment architecture" src="../resources/analysis_environment_arch.svg" width="500">
+<img title="Analysis environment architecture" src="../resources/analysis_environment_arch.svg" width="700">
 
 ## Deployment
 
