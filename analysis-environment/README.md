@@ -129,5 +129,22 @@ This environment can be deployed using `terraform`. Cloud-init is used to config
 
 Users connect through the server using ssh. So they will need non-super users accounts.
 Authentication of the users to the storage accounts will be through `az login` and configured roles, configure them in the azure portal.
+An advantage of this approach is you do not have to buy a domain name in order to install certificates for TLS, also less configuration need.
+A downside is that you have to manage credentials for your users, in case you have very few users this option is viable.
 
-Inspect the configuration of JupyterHub in the `cloudinit/userdata.yaml` and change to your needs.
+An alternative would be to obtain (buy) a domain name and configure access through an OAuthprovider.
+A downside is you have to own a domain, you have to do more configuration, but less user management.
+
+Inspect the configuration of JupyterHub in the `cloudinit/userdata.yaml` and change it to your needs.
+
+## Bulk copy of data between storage accounts
+
+For a one off bulk copy of data in storage accounts on Azure you can use azcopy:
+
+```
+azcopy copy 'https://mysourceaccount.blob.core.windows.net/<SAS-token>' 'https://mydestinationaccount.blob.core.windows.net/<SAS-token>' --recursive
+```
+
+Generate SAS tokens with the correct permissions.
+
+
