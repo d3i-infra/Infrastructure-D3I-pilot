@@ -1,0 +1,12 @@
+# This file needs to be encrypted using ansible-vault
+users:
+  - username: user1
+    password: my_password
+    state: present
+  - username: user2
+    password: password
+    state: present
+  - username: user_that_should_be_absent
+    password: passwd
+    state: absent
+secret_salt: secret

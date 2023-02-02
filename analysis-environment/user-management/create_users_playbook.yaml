@@ -1,0 +1,13 @@
+- name: Configure non-root users
+  hosts: all
+  vars_files:
+    - encrypted_vars.yaml
+  become: yes
+  tasks:
+  - name: Configure users
+    user:
+      name: "{{ item.username }}"
+      password: "{{ item.password | password_hash('sha512', secret_salt) }}"
+      state: "{{ item.state }}"
+      shell: /bin/bash
+    with_items: "{{ users }}"
