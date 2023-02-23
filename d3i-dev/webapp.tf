@@ -15,7 +15,7 @@ data "azurerm_automation_variable_string" "registry-name" {
 }
 
 
-# Create the web app, pass in the App Service Plan ID
+## Create the web app, pass in the App Service Plan ID
 resource "azurerm_linux_web_app" "webapp" {
   name                      = "${lower(var.project_name)}-webapp-${var.environment}"
   location                  = azurerm_resource_group.rg.location
