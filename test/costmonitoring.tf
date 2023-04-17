@@ -13,8 +13,6 @@ resource "azurerm_consumption_budget_resource_group" "budget-rg" {
 
   time_period {
     # Auto calculating and updating these dates causes constant changes, thus hardcodinv via vars.
-    #start_date = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
-    #end_date   = timeadd(formatdate("YYYY-MM-01'T'00:00:00Z", timestamp()), "8640h")
     start_date = var.costmonitor_startdate
     end_date   = var.costmonitor_enddate
   }

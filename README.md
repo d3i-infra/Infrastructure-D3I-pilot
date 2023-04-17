@@ -36,7 +36,7 @@ The --use-device-code option below is only required if you don't have a browser 
 
 ## Terraform initialisation
 
-1. cd setupTerraForm
+1. cd setup-terraform
 
 ```
 terraform init
@@ -55,7 +55,7 @@ First deploy the shared resources, these are resources used by all environments 
 2. Run the command below
 
 ```
-cd d3i-shared-resources
+cd shared-resources
 terraform init -backend-config=backend.conf
 time terraform apply -auto-approve
 ```
@@ -66,37 +66,10 @@ Next deploy an environment
 2. Run the command below
 
 ```
-cd d3i-<environment>
+cd <dev, test or prod>
 terraform init -backend-config=backend.conf
 time terraform apply -auto-approve
 ```
-
-## Resources for learning
-
-### Useful links 
-
-- [Tutorial video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
-- [Tutorial video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)
-- [Blog about managed identities](https://pontifex.dev/posts/terraform-azure-managed-identity/)
-- [Link to ARM templates documentation](https://docs.microsoft.com/en-au/azure/templates/)
-
-### A logical sequence of commands when using Terraform
-
-These commands outlines the basic flow in Terraform, not all steps are necessary, 
-
-```
-terraform init          # Initialize
-terraform fmt           # Formats your config files neatly
-terraform validate      # Validates your configs
-terraform plan          # Checks the tfstate file, what changes need to be apply
-terraform apply         # Applies the changes
-terraform destroy       # Destroys all resources
-```
-
-## Notes
-
-On linux a working nameserver needs to be set in /etc/resolv.conf
-Even if you do not use /etc/resolv.conf config yourself, terraform needs it
 
 
 # Azure components of the D3I-Pilot
@@ -121,7 +94,7 @@ Cost monitoring is configured for the resource groups that contain the component
 
 ### Automation account
 
-The automation account holds non-sensitive variables created by the resources in `d3i-shared-resources` used by the resources deployed in `d3i-<environment>`.
+The automation account holds non-sensitive variables created by the resources in `shared-resources` used by the resources deployed in `<environment>`.
 
 ### Container registry
 
@@ -170,4 +143,31 @@ This storage account contains the donated data, and contains diagnostics from th
 ### Storage account with logging data
 
 This storage account contains the logs of the activity on the storage account containing the donated data. 
+
+## Resources for learning
+
+### Useful links 
+
+- [Tutorial video 1](https://www.youtube.com/watch?v=7xngnjfIlK4)
+- [Tutorial video 2](https://www.youtube.com/watch?v=RTEgE2lcyk4)
+- [Blog about managed identities](https://pontifex.dev/posts/terraform-azure-managed-identity/)
+- [Link to ARM templates documentation](https://docs.microsoft.com/en-au/azure/templates/)
+
+### A logical sequence of commands when using Terraform
+
+These commands outlines the basic flow in Terraform, not all steps are necessary, 
+
+```
+terraform init          # Initialize
+terraform fmt           # Formats your config files neatly
+terraform validate      # Validates your configs
+terraform plan          # Checks the tfstate file, what changes need to be apply
+terraform apply         # Applies the changes
+terraform destroy       # Destroys all resources
+```
+
+## Notes
+
+On linux a working nameserver needs to be set in /etc/resolv.conf
+Even if you do not use /etc/resolv.conf config yourself, terraform needs it
 

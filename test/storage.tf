@@ -1,10 +1,24 @@
-# Todo: The application should only have write access, not read access
 resource "azurerm_storage_account" "sa" {
-  name                     = "${replace(lower(var.project_name), "-", "")}sa${var.project_name}"
+  name                     = "${replace(lower(var.project_name), "-", "")}sa${var.environment}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  network_rules {
+    default_action = "Deny"
+    ip_rules       = var.local_ip
+  }
+
+  queue_properties {
+    logging {
+      read                  = true
+      write                 = true
+      delete                = true
+      retention_policy_days = 100
+      version               = 1.0
+    }
+  }
 }
 
 resource "azurerm_storage_container" "sc" {
@@ -24,4 +38,34 @@ resource "azurerm_key_vault_secret" "sakey" {
   name         = "sakey"
   value        = azurerm_storage_account.sa.primary_access_key
   key_vault_id = azurerm_key_vault.kv.id
+}
+
+
+data "azurerm_storage_account_blob_container_sas" "sastoken" {
+  connection_string = azurerm_storage_account.sa.primary_connection_string
+  container_name    = azurerm_storage_container.sc.name
+  https_only        = true
+
+  start  = "${var.sas_token_startdate}"
+  expiry = "${var.sas_token_enddate}" 
+
+  permissions {
+    read   = false
+    add    = true
+    create = true
+    write  = true
+    delete = false
+    list   = false
+  }
+
+  cache_control       = "max-age=5"
+  content_disposition = "inline"
+  content_encoding    = "deflate"
+  content_language    = "en-US"
+  content_type        = "application/json"
+}
+
+output "sas_url_query_string" {
+  value     = data.azurerm_storage_account_blob_container_sas.sastoken.sas
+  sensitive = true
 }

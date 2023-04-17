@@ -6,7 +6,7 @@ variable "environment" {
 
 variable "project_name" {
   type        = string
-  description = "Determine the project name"
+  description = "Name of the project name"
 }
 
 variable "location" {
@@ -17,7 +17,7 @@ variable "location" {
 
 variable "local_ip" {
   type        = list(string)
-  description = "My local IP so terraform has access to resources behind a firewall"
+  description = "The IP of the terraform user, so terraform has access to resources behind a firewall"
 }
 
 variable "postgres_username" {
@@ -29,13 +29,14 @@ variable "postgres_username" {
 variable "data_encryption_public_rsa_key" {
   type        = string
   sensitive   = true
-  description = "Public RSA key that is used to encrypt data donated by participants"
+  default     = "test"
+  description = "This is not used ATM. is here for reference"
 }
 
 variable "owner_email" {
   type        = string
   sensitive   = true
-  description = "The person that should be emailed when costs exceed a threshold, see main.tf"
+  description = "Email of the owner. Also the person that should be emailed when costs exceed a threshold, see main.tf"
 }
 
 variable "database_name" {
@@ -48,22 +49,37 @@ variable "app_listening_port" {
   description = "Port we communicate to azure to connect to"
 }
 
-variable "dockerimageurl" {
+variable "dockerimagename" {
   type        = string
-  description = "Docker image url source (e.g. eyra github)"
+  description = "Docker image name"
 }
 
 variable "dockerimagetag" {
   type        = string
-  description = "Which version to use like 'latest' or specific release"
+  description = "Image version. For example: 'latest' or 1.1.1"
 }
 
 variable "costmonitor_startdate" {
   type        = string
-  description = "Required for budget monitoring (start date)"
+  description = "Start date for cost monitoring: 2023-02-01T00:00:00Z should be the first day of the current month"
 }
 
 variable "costmonitor_enddate" {
   type        = string
-  description = "Required for budget monitoring (end date) max one year"
+  description = "End date for cost monitoring: 2023-02-01T00:00:00Z should be the first day of the month"
+}
+
+variable "project_name_automation_account" {
+  type        = string
+  description = "The project name of the project that the automation account is in: see shared resourcees"
+}
+
+variable "sas_token_startdate" {
+  type        = string
+  description = "Start date of the SAS token. The SAS token is used by the app to authenticate with the storage account. Example: 2023-01-29"
+}
+
+variable "sas_token_enddate" {
+  type        = string
+  description = "Expiry date of the SAS token. The SAS token is used by the app to authenticate with the storage account. Example: 2023-01-29"
 }
