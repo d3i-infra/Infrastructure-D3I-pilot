@@ -47,7 +47,6 @@ resource "azurerm_linux_web_app" "webapp" {
     "SECRET_KEY_BASE"         = "1sdlkfjdhsflkdshjflasjhkslfjhdaslkfjhdsalfkjhsdaflksdjahflsdkajfhf"
     "WEBSITES_PORT"           = var.app_listening_port
     "AZURE_BLOB_STORAGE_USER" = azurerm_storage_account.sa.name
-    #"AZURE_BLOB_STORAGE_PASSWORD"=azurerm_storage_account.sa.primary_access_key
     "AZURE_BLOB_CONTAINER" = azurerm_storage_container.sc.name
     "AZURE_SAS_TOKEN"      = data.azurerm_storage_account_blob_container_sas.sastoken.sas
     "HTTP_PORT"            = var.app_listening_port

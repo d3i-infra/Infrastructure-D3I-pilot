@@ -46,8 +46,8 @@ data "azurerm_storage_account_blob_container_sas" "sastoken" {
   container_name    = azurerm_storage_container.sc.name
   https_only        = true
 
-  start  = "2023-01-29"
-  expiry = "2023-12-29"
+  start  = "${var.sas_token_startdate}"
+  expiry = "${var.sas_token_enddate}" 
 
   permissions {
     read   = false

@@ -22,7 +22,6 @@ data "azurerm_subscription" "primary" {}
 data "azurerm_client_config" "current" {}
 
 
-##############################################################################
 # Create a resource group
 resource "azurerm_resource_group" "rg" {
   name     = "${var.environment}-${lower(var.project_name)}-rg"
