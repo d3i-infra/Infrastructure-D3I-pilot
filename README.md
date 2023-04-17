@@ -11,7 +11,7 @@ In order to use this repository, you must have:
 2. Basic knowledge about Terraform
 2. Basic knowledge about Azure
 
-# Terraform to deploy our cloud infrastructure
+## Terraform to deploy our cloud infrastructure
 
 Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I Pilot, all cloud configurations are in the configuration files. 
 
@@ -20,9 +20,9 @@ The reason for using Terraform is as follows:
 - We can apply version control to the IaC
 - Our infrastructure will be replicable
 
-# How to use the terraform configuration files in this repository
+## How to use the terraform configuration files in this repository
 
-## Preparation
+### Preparation
 
 1. Install `terraform`. 
 2. Install `azure cli` (called `az` and is used by terraform to interact with Azure)
@@ -34,7 +34,7 @@ The --use-device-code option below is only required if you don't have a browser 
 
     az login --use-device-code --tenant xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx
 
-## Terraform initialisation
+### Terraform initialisation
 
 1. cd setup-terraform
 
@@ -47,7 +47,7 @@ Although not required you may want to look at / change variables in backend.conf
 The above command creates an exclusive storage environment for terraform state.
 Destroying resources of the app will not affect the terraform state.
 
-## Deploy an environment
+### Deploy an environment
 
 First deploy the shared resources, these are resources used by all environments (dev, test, prod).
 
@@ -71,8 +71,7 @@ terraform init -backend-config=backend.conf
 time terraform apply -auto-approve
 ```
 
-
-# Azure components of the D3I-Pilot
+## Azure components of the D3I-Pilot
 
 Below is a diagram of the components on Azure that the software of the D3I-pilot is running on.
 The components will be described in more detail below.
@@ -166,8 +165,9 @@ terraform apply         # Applies the changes
 terraform destroy       # Destroys all resources
 ```
 
-## Notes
+### Notes
+
+#### Terraform on Linux
 
 On linux a working nameserver needs to be set in /etc/resolv.conf
 Even if you do not use /etc/resolv.conf config yourself, terraform needs it
-
