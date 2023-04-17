@@ -11,15 +11,6 @@ In order to use this repository, you must have:
 2. Basic knowledge about Terraform
 2. Basic knowledge about Azure
 
-## Terraform to deploy our cloud infrastructure
-
-Terraform is used to specify our infrastructure as code (IaC). We will use Terraform to deploy the cloud infrastructure of the D3I Pilot, all cloud configurations are in the configuration files. 
-
-The reason for using Terraform is as follows:
-
-- We can apply version control to the IaC
-- Our infrastructure will be replicable
-
 ## How to use the terraform configuration files in this repository
 
 ### Preparation
@@ -144,6 +135,14 @@ This storage account contains the donated data, and contains diagnostics from th
 This storage account contains the logs of the activity on the storage account containing the donated data. 
 
 ## Resources for learning
+
+### Terraform to deploy the cloud infrastructure
+
+Terraform is used to specify our infrastructure as code (IaC).
+The reason for using Terraform is as follows:
+
+- We can apply version control to the IaC
+- Our infrastructure will be replicable
 
 ### Useful links 
 
